@@ -125,12 +125,16 @@ function McpDiagnostics() {
                 <div className="flex gap-4 text-sm mb-4">
                     <a
                         href="https://github.com/aayushmdesai/mcp-dotnet-diagnostics"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="text-emerald-400 hover:text-emerald-300"
                     >
                         GitHub ↗
                     </a>
                     <a
                         href="https://www.nuget.org/packages/mcp-dotnet-diagnostics"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="text-zinc-400 hover:text-zinc-200"
                     >
                         NuGet ↗
@@ -227,24 +231,32 @@ function McpDiagnostics() {
                 <div className="flex flex-wrap gap-3 text-xs">
                     <a
                         href="https://mcpservers.org/servers/aayushmdesai/mcp-dotnet-diagnostics"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="text-zinc-400 hover:text-emerald-400 border border-zinc-800 rounded px-2.5 py-1"
                     >
                         mcpservers.org ↗
                     </a>
                     <a
                         href="https://glama.ai/mcp/servers/aayushmdesai/mcp-dotnet-diagnostics"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="text-zinc-400 hover:text-emerald-400 border border-zinc-800 rounded px-2.5 py-1"
                     >
                         Glama ↗
                     </a>
                     <a
                         href="https://github.com/punkpeye/awesome-mcp-servers"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="text-zinc-400 hover:text-emerald-400 border border-zinc-800 rounded px-2.5 py-1"
                     >
                         awesome-mcp-servers ↗
                     </a>
                     <a
                         href="https://codeguilds.dev/packages/mcp-dotnet-diagnostics"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="text-zinc-400 hover:text-emerald-400 border border-zinc-800 rounded px-2.5 py-1"
                     >
                         CodeGuilds ↗

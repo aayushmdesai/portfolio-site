@@ -36,12 +36,18 @@ function About() {
                 <div className="flex gap-4 text-sm">
                     <a
                         href="https://github.com/aayushmdesai"
+                        aria-label="GitHub"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="text-zinc-400 hover:text-zinc-200"
                     >
                         GitHub
                     </a>
                     <a
                         href="https://linkedin.com/in/aayushmdesai"
+                        aria-label="LinkedIn"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="text-zinc-400 hover:text-zinc-200"
                     >
                         LinkedIn

@@ -242,12 +242,16 @@ function ChefAgent() {
                 <div className="flex gap-4 text-sm">
                     <a
                         href="https://chefagent.vercel.app"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="text-amber-400 hover:text-amber-300"
                     >
                         Live demo ↗
                     </a>
                     <a
                         href="https://github.com/aayushmdesai/chefagent"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="text-zinc-400 hover:text-zinc-200"
                     >
                         GitHub ↗
