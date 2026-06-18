@@ -13,16 +13,16 @@ function App() {
         <Hero />
       </section>
 
+      <section id="experience" className="pt-20 border-t border-zinc-800">
+        <ExperienceSection />
+      </section>
+
       <section id="chefagent" className="pt-20 border-t border-zinc-800">
         <ChefAgentSection />
       </section>
 
       <section id="mcp" className="pt-20 border-t border-zinc-800">
         <McpSection />
-      </section>
-
-      <section id="experience" className="pt-20 border-t border-zinc-800">
-        <ExperienceSection />
       </section>
 
       <section id="connect" className="pt-20 border-t border-zinc-800">

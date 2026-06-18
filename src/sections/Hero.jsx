@@ -25,6 +25,11 @@ const skillGroups = [
 ]
 const projects = [
     {
+        id: 'experience',
+        title: 'Carenet Health · 5 years',
+        desc: 'Backend engineering in healthcare — .NET microservices, EHR integrations, event streaming, AI agent gateway',
+    },
+    {
         id: 'chefagent',
         title: 'ChefAgent',
         desc: 'Multi-agent cooking assistant — Semantic Kernel, RAG, provider-agnostic architecture, 21x latency improvement',
@@ -33,11 +38,6 @@ const projects = [
         id: 'mcp',
         title: 'mcp-dotnet-diagnostics',
         desc: 'Open-source MCP server exposing .NET runtime diagnostics to AI assistants',
-    },
-    {
-        id: 'experience',
-        title: 'Carenet Health · 5 years',
-        desc: 'Backend engineering in healthcare — .NET microservices, EHR integrations, event streaming, AI agent gateway',
     },
 ]
 
@@ -121,11 +121,11 @@ function Hero() {
                 </div>
             </div>
 
-            {/* Projects */}
-            <div className="mb-3">
-                <div className="text-xs text-zinc-500 uppercase tracking-wide mb-4">Personal Projects</div>
+            {/* Experience */}
+            <div className="mb-16">
+                <div className="text-xs text-zinc-500 uppercase tracking-wide mb-4 mt-6">Experience</div>
                 <div className="grid gap-4">
-                    {projects.slice(0, 2).map((p) => (
+                    {projects.slice(0, 1).map((p) => (
                         <button
                             key={p.id}
                             onClick={() => scrollTo(p.id)}
@@ -133,17 +133,16 @@ function Hero() {
                         >
                             <h2 className="font-semibold text-lg mb-1">{p.title}</h2>
                             <p className="text-zinc-400 text-sm mb-3">{p.desc}</p>
-
                         </button>
                     ))}
                 </div>
             </div>
 
-            {/* Experience */}
-            <div className="mb-16">
-                <div className="text-xs text-zinc-500 uppercase tracking-wide mb-4 mt-6">Experience</div>
+            {/* Projects */}
+            <div className="mb-3">
+                <div className="text-xs text-zinc-500 uppercase tracking-wide mb-4">Personal Projects</div>
                 <div className="grid gap-4">
-                    {projects.slice(2).map((p) => (
+                    {projects.slice(1).map((p) => (
                         <button
                             key={p.id}
                             onClick={() => scrollTo(p.id)}
@@ -151,6 +150,7 @@ function Hero() {
                         >
                             <h2 className="font-semibold text-lg mb-1">{p.title}</h2>
                             <p className="text-zinc-400 text-sm mb-3">{p.desc}</p>
+
                         </button>
                     ))}
                 </div>
