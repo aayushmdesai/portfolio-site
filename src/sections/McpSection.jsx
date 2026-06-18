@@ -1,3 +1,4 @@
+import { useState } from 'react';
 const tools = [
     {
         name: 'get_process_info',
@@ -82,6 +83,25 @@ const decisions = [
         ),
     },
 ]
+
+function CopyButton({ text }) {
+    const [copied, setCopied] = useState(false)
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(text)
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2000)
+    }
+
+    return (
+        <button
+            onClick={handleCopy}
+            className="text-xs text-zinc-500 hover:text-zinc-300 transition"
+        >
+            {copied ? 'Copied!' : 'Copy'}
+        </button>
+    )
+}
 
 function ToolsTable() {
     return (
@@ -212,19 +232,27 @@ function McpSection() {
             {/* Install */}
             <section>
                 <h2 className="text-xl font-semibold mb-4">Install</h2>
-                <div className="bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 font-mono text-sm text-zinc-300 mb-4">
-                    dotnet tool install -g mcp-dotnet-diagnostics
+                <div className="relative bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 font-mono text-sm text-zinc-300">
+                    <span>dotnet tool install -g mcp-dotnet-diagnostics</span>
+                    <div className="absolute top-2.5 right-3">
+                        <CopyButton text="dotnet tool install -g mcp-dotnet-diagnostics" />
+                    </div>
                 </div>
                 <p className="text-sm text-zinc-500 mb-3">Then add it to your Claude Desktop config:</p>
-                <pre className="bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 text-xs text-zinc-300 overflow-x-auto">
-                    {`{
+                <div className="relative">
+                    <pre className="bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 text-xs text-zinc-300 overflow-x-auto">
+                        {`{
   "mcpServers": {
     "dotnet-diagnostics": {
       "command": "mcp-dotnet-diagnostics"
     }
   }
 }`}
-                </pre>
+                    </pre>
+                    <div className="absolute top-2.5 right-3">
+                        <CopyButton text={`{\n  "mcpServers": {\n    "dotnet-diagnostics": {\n      "command": "mcp-dotnet-diagnostics"\n    }\n  }\n}`} />
+                    </div>
+                </div>
                 <p className="text-xs text-zinc-500 mt-3 mb-4">
                     34 unit + integration tests · CI/CD auto-publish on version tags
                 </p>

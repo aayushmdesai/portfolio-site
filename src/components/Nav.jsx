@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+
 const links = [
   { id: 'home', label: 'Home' },
   { id: 'experience', label: 'Experience' },
@@ -9,6 +10,7 @@ const links = [
 
 function Nav() {
   const [active, setActive] = useState('home')
+  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
     const sections = links
@@ -19,60 +21,86 @@ function Nav() {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        // Pick the entry that is most visible (highest intersection ratio)
-        // among those currently intersecting the viewport.
-        const visible = entries.filter((e) => e.isIntersecting)
-        if (visible.length === 0) return
-
-        const mostVisible = visible.reduce((best, entry) =>
-          entry.intersectionRatio > best.intersectionRatio ? entry : best
-        )
-        setActive(mostVisible.target.id)
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) setActive(entry.target.id)
+        })
       },
-      {
-        // Trigger when a section occupies a meaningful chunk of the viewport,
-        // biased toward the upper half so the nav updates a bit before the
-        // section is fully centered.
-        rootMargin: '-20% 0px -55% 0px',
-        threshold: [0, 0.25, 0.5, 0.75, 1],
-      }
+      { rootMargin: '-10% 0px -85% 0px', threshold: 0 }
     )
 
     sections.forEach((section) => observer.observe(section))
-
     return () => observer.disconnect()
   }, [])
 
   const handleClick = (e, id) => {
     e.preventDefault()
+    setMenuOpen(false)
     const el = document.getElementById(id)
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    }
+    if (!el) return
+    const navHeight = document.querySelector('nav')?.offsetHeight || 65
+    const top = el.getBoundingClientRect().top + window.scrollY - navHeight
+    window.scrollTo({ top, behavior: 'smooth' })
   }
 
   return (
-    <nav className="sticky top-0 z-50 bg-zinc-950/90 backdrop-blur border-b border-zinc-800 px-6 py-4 flex gap-6 items-center">
-      <a
-        href="#home"
-        onClick={(e) => handleClick(e, 'home')}
-        className="text-zinc-100 font-semibold mr-auto"
-      >
-        AD
-      </a>
-      {links.map((link) => (
+    <nav className="sticky top-0 z-50 bg-zinc-950/90 backdrop-blur border-b border-zinc-800">
+      <div className="px-6 py-4 flex items-center">
+        {/* Logo */}
         <a
-          key={link.id}
-          href={`#${link.id}`}
-          onClick={(e) => handleClick(e, link.id)}
-          className={`text-sm transition ${active === link.id
-            ? 'text-zinc-100 font-medium'
-            : 'text-zinc-400 hover:text-zinc-200'
-            }`}
+          href="#home"
+          onClick={(e) => handleClick(e, 'home')}
+          className="text-zinc-100 font-semibold mr-auto"
         >
-          {link.label}
+          AD
         </a>
-      ))}
+
+        {/* Desktop links */}
+        <div className="hidden md:flex gap-6 items-center">
+          {links.map((link) => (
+            <a
+              key={link.id}
+              href={`#${link.id}`}
+              onClick={(e) => handleClick(e, link.id)}
+              className={`text-sm transition ${active === link.id
+                  ? 'text-zinc-100 font-medium'
+                  : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+
+        {/* Hamburger button — mobile only */}
+        <button
+          className="md:hidden flex flex-col gap-1.5 p-1"
+          onClick={() => setMenuOpen((o) => !o)}
+          aria-label="Toggle menu"
+        >
+          <span className={`block w-5 h-px bg-zinc-400 transition-all duration-300 ${menuOpen ? 'rotate-45 translate-y-2' : ''}`} />
+          <span className={`block w-5 h-px bg-zinc-400 transition-all duration-300 ${menuOpen ? 'opacity-0' : ''}`} />
+          <span className={`block w-5 h-px bg-zinc-400 transition-all duration-300 ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`} />
+        </button>
+      </div>
+
+      {/* Mobile dropdown */}
+      {menuOpen && (
+        <div className="md:hidden border-t border-zinc-800 px-6 py-4 flex flex-col gap-4 bg-zinc-950">
+          {links.map((link) => (
+            <a
+              key={link.id}
+              href={`#${link.id}`}
+              onClick={(e) => handleClick(e, link.id)}
+              className={`text-sm transition ${active === link.id
+                  ? 'text-zinc-100 font-medium'
+                  : 'text-zinc-400 hover:text-zinc-200'
+                }`}
+            >
+              {link.label}
+            </a>
+          ))}
+        </div>
+      )}
     </nav>
   )
 }

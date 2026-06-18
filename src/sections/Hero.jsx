@@ -40,10 +40,12 @@ const projects = [
         desc: 'Open-source MCP server exposing .NET runtime diagnostics to AI assistants',
     },
 ]
-
 function scrollTo(id) {
     const el = document.getElementById(id)
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    if (!el) return
+    const navHeight = document.querySelector('nav')?.offsetHeight || 65
+    const top = el.getBoundingClientRect().top + window.scrollY - navHeight
+    window.scrollTo({ top, behavior: 'smooth' })
 }
 
 function Hero() {
@@ -64,7 +66,7 @@ function Hero() {
                         <span className="text-xs text-emerald-400 font-medium">Open to opportunities</span>
                     </div>
 
-                    <h1 className="text-4xl font-bold mb-2">Aayush Desai</h1>
+                    <h1 className="text-3xl sm:text-4xl font-bold mb-2">Aayush Desai</h1>
 
                     <p className="text-zinc-400 text-lg mb-2">
                         Backend engineer building AI agent infrastructure — multi-agent

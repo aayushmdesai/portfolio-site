@@ -121,7 +121,7 @@ function RequestFlow({ onStepChange, paused = false }) {
 
     useEffect(() => {
         onStepChange(flowSteps[step].agents)
-    }, [step])
+    }, [step, onStepChange])
 
     useEffect(() => {
         if (!playing || paused) return
@@ -141,23 +141,20 @@ function RequestFlow({ onStepChange, paused = false }) {
                         <div className="flex flex-col items-center">
                             <button
                                 onClick={() => { setStep(i); setPlaying(false) }}
-                                className={`w-7 h-7 rounded-full border-2 flex-shrink-0 flex items-center justify-center text-xs font-semibold transition-all duration-300 ${
-                                    i <= step
+                                className={`w-7 h-7 rounded-full border-2 flex-shrink-0 flex items-center justify-center text-xs font-semibold transition-all duration-300 ${i <= step
                                         ? 'bg-amber-500 border-amber-500 text-zinc-950'
                                         : 'bg-zinc-900 border-zinc-700 text-zinc-500 hover:border-zinc-500'
-                                }`}
+                                    }`}
                             >
                                 {i + 1}
                             </button>
                             {i < flowSteps.length - 1 && (
-                                <div className={`w-px flex-1 my-1 transition-all duration-700 ${
-                                    i < step ? 'bg-amber-500' : 'bg-zinc-700'
-                                }`} style={{ minHeight: '20px' }} />
+                                <div className={`w-px flex-1 my-1 transition-all duration-700 ${i < step ? 'bg-amber-500' : 'bg-zinc-700'
+                                    }`} style={{ minHeight: '20px' }} />
                             )}
                         </div>
-                        <div className={`pt-0.5 pb-5 text-xs leading-snug transition-colors duration-300 ${
-                            i === step ? 'text-zinc-200 font-medium' : 'text-zinc-500'
-                        }`}>
+                        <div className={`pt-0.5 pb-5 text-xs leading-snug transition-colors duration-300 ${i === step ? 'text-zinc-200 font-medium' : 'text-zinc-500'
+                            }`}>
                             {s.label}
                         </div>
                     </div>
