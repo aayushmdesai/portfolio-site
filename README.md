@@ -1,17 +1,37 @@
-# React + Vite
+# aayushmdesai.vercel.app
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Personal portfolio site — single-page, scrollable, built with React + Tailwind + Vite.
 
-Currently, two official plugins are available:
+![Portfolio screenshot](./public/portfolio-screenshot.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+**Live:** [aayushmdesai.vercel.app](https://aayushmdesai.vercel.app)
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Sections
 
-## Expanding the ESLint configuration
+- **Home** — intro, experience + project cards, tech stack grid
+- **Experience** — Carenet Health (5 years): expanded narratives on key projects with problem → approach → outcome framing
+- **ChefAgent** — multi-agent cooking assistant: interactive architecture diagram, animated request lifecycle, eval results, guardrails
+- **MCP Server** — mcp-dotnet-diagnostics: demo GIF, 7-tool reference table, install instructions
+- **Connect** — contact links
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-# portfolio-site
+## Stack
+
+- React + Vite + Tailwind v4
+- React Icons (`react-icons/fa`) for brand icons
+- Lucide React for UI icons
+- Deployed on Vercel (auto-deploy from `main`)
+
+## Run locally
+
+```bash
+npm install
+npm run dev
+```
+
+## Notes
+
+- No router — single-page with anchor-based navigation and `IntersectionObserver` for active nav highlighting
+- Architecture diagram in ChefAgent is custom SVG with hover-to-reveal and animated request lifecycle linked to node highlighting
+- Sticky nav collapses to a hamburger menu on mobile
