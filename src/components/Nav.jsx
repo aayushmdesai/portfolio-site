@@ -59,7 +59,7 @@ function Nav() {
         onClick={(e) => handleClick(e, 'home')}
         className="text-zinc-100 font-semibold mr-auto"
       >
-        Aayush Desai
+        AD
       </a>
       {links.map((link) => (
         <a
@@ -67,8 +67,8 @@ function Nav() {
           href={`#${link.id}`}
           onClick={(e) => handleClick(e, link.id)}
           className={`text-sm transition ${active === link.id
-              ? 'text-zinc-100 font-medium'
-              : 'text-zinc-400 hover:text-zinc-200'
+            ? 'text-zinc-100 font-medium'
+            : 'text-zinc-400 hover:text-zinc-200'
             }`}
         >
           {link.label}
