@@ -112,7 +112,7 @@ function ToolsTable() {
     )
 }
 
-function McpDiagnostics() {
+function McpSection() {
     return (
         <div className="pb-20">
             {/* Hero */}
@@ -267,4 +267,4 @@ function McpDiagnostics() {
     )
 }
 
-export default McpDiagnostics
+export default McpSection

@@ -36,22 +36,30 @@ const agents = [
 ]
 
 const flowSteps = [
-    { text: 'User message arrives at /chat', agents: [] },
-    { text: 'IntentRouter classifies intent (rules, <1ms)', agents: ['orchestrator'] },
-    { text: 'Orchestrator routes to RecipeAgent, DietAgent, and/or PlannerAgent', agents: ['orchestrator', 'recipe', 'diet', 'planner'] },
-    { text: 'Each agent emits a Langfuse span (14 span types across the full trace tree)', agents: ['recipe', 'diet', 'planner'] },
-    { text: 'Orchestrator assembles the final response with per-recipe validation', agents: ['orchestrator'] },
+    { label: 'User message', agents: [] },
+    { label: 'Intent classification', agents: ['orchestrator'] },
+    { label: 'Agent routing', agents: ['orchestrator', 'recipe', 'diet', 'planner'] },
+    { label: 'Langfuse tracing', agents: ['recipe', 'diet', 'planner'] },
+    { label: 'Response assembly', agents: ['orchestrator'] },
 ]
 
-function ArchitectureDiagram({ highlighted = [] }) {
+function ArchitectureDiagram({ highlighted = [], onHoverChange }) {
     const [hovered, setHovered] = useState(null)
     const activeId = hovered || highlighted[highlighted.length - 1] || null
     const activeAgent = agents.find((a) => a.id === activeId)
-
     const isLit = (id) => hovered === id || highlighted.includes(id)
 
+    const handleEnter = (id) => {
+        setHovered(id)
+        onHoverChange?.(true)
+    }
+    const handleLeave = () => {
+        setHovered(null)
+        onHoverChange?.(false)
+    }
+
     return (
-        <div className="border border-zinc-800 rounded-xl p-6 bg-zinc-900/40">
+        <div className="border border-zinc-800 rounded-xl p-6 bg-zinc-900/40 h-full">
             <svg viewBox="50 10 680 280" className="w-full h-auto">
                 <line x1="360" y1="90" x2="140" y2="195" stroke="#3f3f46" strokeWidth="1.5" />
                 <line x1="360" y1="90" x2="380" y2="195" stroke="#3f3f46" strokeWidth="1.5" />
@@ -62,16 +70,12 @@ function ArchitectureDiagram({ highlighted = [] }) {
                 {agents.map((agent) => (
                     <g
                         key={agent.id}
-                        onMouseEnter={() => setHovered(agent.id)}
-                        onMouseLeave={() => setHovered(null)}
+                        onMouseEnter={() => handleEnter(agent.id)}
+                        onMouseLeave={handleLeave}
                         style={{ cursor: 'pointer' }}
                     >
                         <rect
-                            x={agent.x}
-                            y={agent.y}
-                            width="140"
-                            height="60"
-                            rx="10"
+                            x={agent.x} y={agent.y} width="140" height="60" rx="10"
                             fill={isLit(agent.id) ? agent.color : '#18181b'}
                             stroke={agent.color}
                             strokeWidth={isLit(agent.id) ? '2.5' : '1.5'}
@@ -79,23 +83,15 @@ function ArchitectureDiagram({ highlighted = [] }) {
                             className="transition-all duration-300"
                         />
                         <rect
-                            x={agent.x}
-                            y={agent.y}
-                            width="140"
-                            height="60"
-                            rx="10"
+                            x={agent.x} y={agent.y} width="140" height="60" rx="10"
                             fill="none"
                             stroke={agent.color}
                             strokeWidth={isLit(agent.id) ? '2.5' : '1.5'}
                             className="transition-all duration-300"
                         />
                         <text
-                            x={agent.x + 70}
-                            y={agent.y + 35}
-                            textAnchor="middle"
-                            fill="#f4f4f5"
-                            fontSize="15"
-                            fontWeight="600"
+                            x={agent.x + 70} y={agent.y + 35}
+                            textAnchor="middle" fill="#f4f4f5" fontSize="15" fontWeight="600"
                         >
                             {agent.name}
                         </text>
@@ -112,13 +108,14 @@ function ArchitectureDiagram({ highlighted = [] }) {
                         — {activeAgent.desc}
                     </p>
                 ) : (
-                    <p className="text-zinc-500">Hover any node, or step through the request lifecycle below.</p>
+                    <p className="text-zinc-500">Hover any node, or watch the lifecycle animate on the right.</p>
                 )}
             </div>
         </div>
     )
 }
-function RequestFlow({ onStepChange }) {
+
+function RequestFlow({ onStepChange, paused = false }) {
     const [step, setStep] = useState(0)
     const [playing, setPlaying] = useState(true)
 
@@ -127,64 +124,49 @@ function RequestFlow({ onStepChange }) {
     }, [step])
 
     useEffect(() => {
-        if (!playing) return
+        if (!playing || paused) return
         const id = setInterval(() => {
             setStep((s) => (s + 1) % flowSteps.length)
         }, 2200)
         return () => clearInterval(id)
-    }, [playing])
+    }, [playing, paused])
 
     return (
-        <div className="border border-zinc-800 rounded-xl p-6 bg-zinc-900/40">
-            <div className="flex items-center justify-between mb-5">
-                <span className="text-sm text-zinc-400">Request lifecycle</span>
-                <button
-                    onClick={() => setPlaying((p) => !p)}
-                    className="text-xs px-2.5 py-1 rounded border border-zinc-700 text-zinc-300 hover:border-zinc-500"
-                >
-                    {playing ? 'Pause' : 'Play'}
-                </button>
-            </div>
+        <div className="border border-zinc-800 rounded-xl p-6 bg-zinc-900/40 h-full flex flex-col">
+            <span className="text-sm text-zinc-400 block mb-6">Request lifecycle</span>
 
-            <div className="relative mb-8">
-                <div className="absolute top-3 left-0 right-0 h-px bg-zinc-800" />
-                <div
-                    className="absolute top-3 left-0 h-px bg-amber-500 transition-all duration-700 ease-out"
-                    style={{ width: `${(step / (flowSteps.length - 1)) * 100}%` }}
-                />
-                <div className="relative flex justify-between">
-                    {flowSteps.map((_, i) => (
-                        <button
-                            key={i}
-                            onClick={() => {
-                                setStep(i)
-                                setPlaying(false)
-                            }}
-                            className="flex flex-col items-center group"
-                        >
-                            <span
-                                className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-[11px] font-semibold transition-all duration-300 ${i <= step
-                                    ? 'bg-amber-500 border-amber-500 text-zinc-950'
-                                    : 'bg-zinc-900 border-zinc-700 text-zinc-500 group-hover:border-zinc-500'
-                                    }`}
+            <div className="flex flex-col gap-0 flex-1">
+                {flowSteps.map((s, i) => (
+                    <div key={i} className="flex gap-4 items-start">
+                        <div className="flex flex-col items-center">
+                            <button
+                                onClick={() => { setStep(i); setPlaying(false) }}
+                                className={`w-7 h-7 rounded-full border-2 flex-shrink-0 flex items-center justify-center text-xs font-semibold transition-all duration-300 ${
+                                    i <= step
+                                        ? 'bg-amber-500 border-amber-500 text-zinc-950'
+                                        : 'bg-zinc-900 border-zinc-700 text-zinc-500 hover:border-zinc-500'
+                                }`}
                             >
                                 {i + 1}
-                            </span>
-                        </button>
-                    ))}
-                </div>
-            </div>
-
-            <div
-                key={step}
-                className="rounded-lg border border-amber-500/40 bg-amber-500/5 px-4 py-3 text-sm text-zinc-100 animate-[fadeIn_0.4s_ease-out]"
-            >
-                <span className="text-amber-400 font-semibold mr-2">Step {step + 1}</span>
-                {flowSteps[step].text}
+                            </button>
+                            {i < flowSteps.length - 1 && (
+                                <div className={`w-px flex-1 my-1 transition-all duration-700 ${
+                                    i < step ? 'bg-amber-500' : 'bg-zinc-700'
+                                }`} style={{ minHeight: '20px' }} />
+                            )}
+                        </div>
+                        <div className={`pt-0.5 pb-5 text-xs leading-snug transition-colors duration-300 ${
+                            i === step ? 'text-zinc-200 font-medium' : 'text-zinc-500'
+                        }`}>
+                            {s.label}
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     )
 }
+
 function EvalTable() {
     return (
         <div className="overflow-x-auto">
@@ -228,11 +210,12 @@ function EvalTable() {
     )
 }
 
-function ChefAgent() {
+function ChefAgentSection() {
     const [highlightedAgents, setHighlightedAgents] = useState([])
+    const [isHovering, setIsHovering] = useState(false)
+
     return (
         <div className="pb-20">
-            {/* Hero */}
             <div className="mb-10">
                 <h1 className="text-3xl font-bold mb-2">ChefAgent</h1>
                 <p className="text-zinc-400 text-lg mb-4">
@@ -240,33 +223,19 @@ function ChefAgent() {
                     weekly meal planning over a RAG pipeline of 52k recipes.
                 </p>
                 <div className="flex gap-4 text-sm">
-                    <a
-                        href="https://chefagent.vercel.app"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-amber-400 hover:text-amber-300"
-                    >
+                    <a href="https://chefagent.vercel.app" target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:text-amber-300">
                         Live demo ↗
                     </a>
-                    <a
-                        href="https://github.com/aayushmdesai/chefagent"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-zinc-400 hover:text-zinc-200"
-                    >
+                    <a href="https://github.com/aayushmdesai/chefagent" target="_blank" rel="noopener noreferrer" className="text-zinc-400 hover:text-zinc-200">
                         GitHub ↗
                     </a>
                 </div>
-            </div >
-            {/* Product screenshot */}
+            </div>
+
             <section className="mb-12">
                 <h2 className="text-xl font-semibold mb-4">What it looks like</h2>
                 <div className="border border-zinc-800 rounded-xl overflow-hidden">
-                    <img
-                        src="/chefagent-demo.png"
-                        alt="ChefAgent chat interface showing a pasta recipe search with dietary profile sidebar"
-                        className="w-full"
-                    />
+                    <img src="/chefagent-demo.png" alt="ChefAgent chat interface" className="w-full" />
                 </div>
                 <p className="text-sm text-zinc-500 mt-3 leading-relaxed">
                     A recipe search routed entirely through the rules engine —{' '}
@@ -277,65 +246,51 @@ function ChefAgent() {
                     shown in the sidebar.
                 </p>
             </section>
-            {/* Architecture */}
 
-            <section className="mb-12">
-                <h2 className="text-xl font-semibold mb-4">Architecture</h2>
-                <ArchitectureDiagram highlighted={highlightedAgents} />
+            <section className="mb-12 -mx-6">
+                <h2 className="text-xl font-semibold mb-4 px-6">Architecture</h2>
+                <div className="flex flex-col lg:flex-row gap-4 items-stretch px-6">
+                    <div className="w-full lg:w-[70%]">
+                        <ArchitectureDiagram
+                            highlighted={highlightedAgents}
+                            onHoverChange={setIsHovering}
+                        />
+                    </div>
+                    <div className="w-full lg:w-[30%]">
+                        <RequestFlow
+                            onStepChange={setHighlightedAgents}
+                            paused={isHovering}
+                        />
+                    </div>
+                </div>
             </section>
 
-            <section className="mb-12">
-                <RequestFlow onStepChange={setHighlightedAgents} />
-            </section>
-
-            {/* Key decisions */}
             <section className="mb-12">
                 <h2 className="text-xl font-semibold mb-4">Key decisions</h2>
                 <div className="space-y-5 text-zinc-300 leading-relaxed">
                     <div>
-                        <h3 className="font-semibold text-zinc-100 mb-1">
-                            Rules for the common case, LLM for the edge case
-                        </h3>
-                        <p>
-                            The IntentRouter and DietAgent's validation engine both run on rules,
-                            not LLM calls — 94% of dietary validations and intent classifications
-                            are handled without touching the model. This pattern showed up
-                            everywhere: spell correction, semantic negation, evaluation scoring.
-                            Each component found the same boundary between what rules can handle
-                            reliably and what genuinely needs judgment.
-                        </p>
+                        <h3 className="font-semibold text-zinc-100 mb-1">Rules for the common case, LLM for the edge case</h3>
+                        <p>The IntentRouter and DietAgent's validation engine both run on rules, not LLM calls — 94% of dietary validations and intent classifications are handled without touching the model. This pattern showed up everywhere: spell correction, semantic negation, evaluation scoring. Each component found the same boundary between what rules can handle reliably and what genuinely needs judgment.</p>
                     </div>
                     <div>
-                        <h3 className="font-semibold text-zinc-100 mb-1">
-                            Provider-agnostic from day one
-                        </h3>
+                        <h3 className="font-semibold text-zinc-100 mb-1">Provider-agnostic from day one</h3>
                         <p>
-                            <code className="text-sm bg-zinc-800 px-1.5 py-0.5 rounded">ILlmProvider</code>{' '}
-                            and{' '}
+                            <code className="text-sm bg-zinc-800 px-1.5 py-0.5 rounded">ILlmProvider</code>{' '}and{' '}
                             <code className="text-sm bg-zinc-800 px-1.5 py-0.5 rounded">IEmbeddingProvider</code>{' '}
-                            interfaces meant swapping Ollama for Groq, and Nomic for Voyage AI, required
-                            zero changes to agent logic — only configuration. The Groq swap alone took
-                            query latency from ~14,000ms to ~651ms, a 21x improvement, without touching
-                            a single agent.
+                            interfaces meant swapping Ollama for Groq, and Nomic for Voyage AI, required zero changes to agent logic — only configuration. The Groq swap alone took query latency from ~14,000ms to ~651ms, a 21x improvement, without touching a single agent.
                         </p>
                     </div>
                     <div>
-                        <h3 className="font-semibold text-zinc-100 mb-1">
-                            Eval before cloud, not after
-                        </h3>
-                        <p>
-                            The RAGAS-based evaluation pipeline was built locally before any cloud
-                            migration — so moving to Groq, Voyage AI, and Qdrant Cloud was a measured
-                            migration with before/after numbers, not a leap of faith.
-                        </p>
+                        <h3 className="font-semibold text-zinc-100 mb-1">Eval before cloud, not after</h3>
+                        <p>The RAGAS-based evaluation pipeline was built locally before any cloud migration — so moving to Groq, Voyage AI, and Qdrant Cloud was a measured migration with before/after numbers, not a leap of faith.</p>
                     </div>
                 </div>
             </section>
+
             <section className="mb-12">
                 <h2 className="text-xl font-semibold mb-4">Guardrails &amp; observability</h2>
                 <p className="text-zinc-400 text-sm mb-5 leading-relaxed">
-                    Every request passes through 5 guardrail layers before a response goes out,
-                    and every step of the pipeline is traced — not just logged after the fact.
+                    Every request passes through 5 guardrail layers before a response goes out, and every step of the pipeline is traced — not just logged after the fact.
                 </p>
                 <div className="grid sm:grid-cols-2 gap-3 mb-6">
                     {[
@@ -352,39 +307,23 @@ function ChefAgent() {
                     ))}
                 </div>
                 <p className="text-zinc-400 text-sm leading-relaxed">
-                    Every <code className="text-xs bg-zinc-800 px-1 py-0.5 rounded">/chat</code> request
-                    produces a full Langfuse trace tree — intent classification, orchestrator routing,
-                    each agent call, the Qdrant query, and diet validation all show up as separate spans
-                    (14 span types total). Tracing overhead stays under 1ms on the request thread because
-                    the client is fire-and-forget, backed by a bounded channel worker rather than a
-                    blocking call.
+                    Every <code className="text-xs bg-zinc-800 px-1 py-0.5 rounded">/chat</code> request produces a full Langfuse trace tree — intent classification, orchestrator routing, each agent call, the Qdrant query, and diet validation all show up as separate spans (14 span types total). Tracing overhead stays under 1ms on the request thread because the client is fire-and-forget, backed by a bounded channel worker rather than a blocking call.
                 </p>
             </section>
 
-            {/* Eval results */}
             <section className="mb-12">
                 <h2 className="text-xl font-semibold mb-4">Evaluation results</h2>
                 <EvalTable />
                 <p className="text-sm text-zinc-400 mt-4 leading-relaxed">
-                    The semantic negation step is a deliberate tradeoff, not a regression to hide.
-                    Filtering out non-dairy recipes from a "dairy-free pasta" query shrinks the
-                    retrieval pool — context relevance drops slightly because fewer documents are
-                    considered relevant by the metric. But answer relevancy jumps +0.112, because a
-                    user asking for dairy-free pasta would rather see 2 compatible recipes than 5
-                    recipes where 3 contain cheese. The metric that matters most went up.
+                    The semantic negation step is a deliberate tradeoff, not a regression to hide. Filtering out non-dairy recipes from a "dairy-free pasta" query shrinks the retrieval pool — context relevance drops slightly because fewer documents are considered relevant by the metric. But answer relevancy jumps +0.112, because a user asking for dairy-free pasta would rather see 2 compatible recipes than 5 recipes where 3 contain cheese. The metric that matters most went up.
                 </p>
                 <p className="text-sm text-zinc-400 mt-3 leading-relaxed">
-                    One known regression remains in the backlog: the Voyage AI embedding migration
-                    improved overall context relevance (driven mostly by corpus growth from 10k to
-                    52k recipes) but weakened negation-query performance specifically, since{' '}
+                    One known regression remains in the backlog: the Voyage AI embedding migration improved overall context relevance (driven mostly by corpus growth from 10k to 52k recipes) but weakened negation-query performance specifically, since{' '}
                     <code className="text-xs bg-zinc-800 px-1 py-0.5 rounded">voyage-4-lite</code>{' '}
-                    encodes exclusion phrases differently than the previous model. Post-retrieval
-                    filtering can't fully rescue a weaker initial candidate set — documented as
-                    tech debt rather than papered over.
+                    encodes exclusion phrases differently than the previous model. Post-retrieval filtering can't fully rescue a weaker initial candidate set — documented as tech debt rather than papered over.
                 </p>
             </section>
 
-            {/* Tech stack */}
             <section>
                 <h2 className="text-xl font-semibold mb-4">Tech stack</h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
@@ -406,8 +345,8 @@ function ChefAgent() {
                     ))}
                 </div>
             </section>
-        </div >
+        </div>
     )
 }
 
-export default ChefAgent
+export default ChefAgentSection
