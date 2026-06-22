@@ -198,13 +198,12 @@ function EvalTable() {
                         <td className="py-2 pr-4 text-emerald-400">0.325 (+0.112)</td>
                         <td className="py-2 text-zinc-500">Deliberate tradeoff — see below</td>
                     </tr>
+
                     <tr>
-                        <tr>
-                            <td className="py-2 pr-4">+ 52k corpus, Voyage AI</td>
-                            <td className="py-2 pr-4 text-emerald-400">0.578 (+0.096)</td>
-                            <td className="py-2 pr-4 text-orange-400">0.279 (−0.046)</td>
-                            <td className="py-2 text-zinc-500">Context relevance up; answer relevancy regression — see below</td>
-                        </tr>
+                        <td className="py-2 pr-4">+ 52k corpus, Voyage AI</td>
+                        <td className="py-2 pr-4 text-emerald-400">0.578 (+0.096)</td>
+                        <td className="py-2 pr-4 text-orange-400">0.279 (−0.046)</td>
+                        <td className="py-2 text-zinc-500">Context relevance up; answer relevancy regression — see below</td>
                     </tr>
                 </tbody>
             </table>
