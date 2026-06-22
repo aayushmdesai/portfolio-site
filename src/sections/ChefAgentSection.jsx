@@ -330,7 +330,7 @@ function ChefAgentSection() {
                     and multi-turn conversation — run against the live Railway deployment.
                 </p>
                 <p className="text-sm text-zinc-400 mt-4 leading-relaxed">
-                    The semantic negation step is a deliberate tradeoff, not a regression to hide. Filtering out non-dairy recipes from a "dairy-free pasta" query shrinks the retrieval pool — context relevance drops slightly because fewer documents are considered relevant by the metric. But answer relevancy jumps +0.112, because a user asking for dairy-free pasta would rather see 2 compatible recipes than 5 recipes where 3 contain cheese. The metric that matters most went up.
+                    The semantic negation step is a deliberate tradeoff, not a regression to hide. Filtering out non-dairy recipes from a "dairy-free pasta" query shrinks the retrieval pool — context relevance drops slightly because fewer documents are considered relevant by the metric. But answer relevancy jumps +0.112 over baseline, because a user asking for dairy-free pasta would rather see 2 compatible recipes than 5 recipes where 3 contain cheese. The metric that matters most went up.
                 </p>
                 <p className="text-sm text-zinc-400 mt-3 leading-relaxed">
                     One known regression remains in the backlog: the Voyage AI embedding migration improved overall context relevance (driven mostly by corpus growth from 10k to 52k recipes) but weakened negation-query performance specifically, since{' '}
