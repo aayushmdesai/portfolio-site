@@ -317,6 +317,11 @@ function ChefAgentSection() {
                 <h2 className="text-xl font-semibold mb-4">Evaluation results</h2>
                 <EvalTable />
                 <p className="text-sm text-zinc-400 mt-4 leading-relaxed">
+                    End-to-end: 87% pass rate (52/60) across a hand-curated golden dataset
+                    covering intent classification, dietary filtering, meal plan generation,
+                    and multi-turn conversation — run against the live Railway deployment.
+                </p>
+                <p className="text-sm text-zinc-400 mt-4 leading-relaxed">
                     The semantic negation step is a deliberate tradeoff, not a regression to hide. Filtering out non-dairy recipes from a "dairy-free pasta" query shrinks the retrieval pool — context relevance drops slightly because fewer documents are considered relevant by the metric. But answer relevancy jumps +0.112, because a user asking for dairy-free pasta would rather see 2 compatible recipes than 5 recipes where 3 contain cheese. The metric that matters most went up.
                 </p>
                 <p className="text-sm text-zinc-400 mt-3 leading-relaxed">
