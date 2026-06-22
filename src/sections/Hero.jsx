@@ -8,7 +8,7 @@ const skillGroups = [
     },
     {
         title: 'AI & Agent Systems',
-        skills: ['Semantic Kernel', 'RAG', 'Qdrant', 'RAGAS', 'Langfuse', 'MCP', 'Ollama', 'Groq', 'Voyage AI', 'Azure OpenAI', 'LLM agent workflows'],
+        skills: ['Semantic Kernel', 'RAG', 'RAGAS', 'Langfuse', 'MCP', 'Ollama', 'Groq', 'Voyage AI', 'Azure OpenAI', 'LLM agent workflows'],
     },
     {
         title: 'Cloud & Infrastructure',
