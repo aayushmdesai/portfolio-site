@@ -57,6 +57,10 @@ function ArchitectureDiagram({ highlighted = [], onHoverChange }) {
         setHovered(null)
         onHoverChange?.(false)
     }
+    const handleClick = (id) => {
+        setHovered((prev) => (prev === id ? null : id))
+        onHoverChange?.(hovered !== id)
+    }
 
     return (
         <div className="border border-zinc-800 rounded-xl p-6 bg-zinc-900/40 h-full">
@@ -64,14 +68,13 @@ function ArchitectureDiagram({ highlighted = [], onHoverChange }) {
                 <line x1="360" y1="90" x2="140" y2="195" stroke="#3f3f46" strokeWidth="1.5" />
                 <line x1="360" y1="90" x2="380" y2="195" stroke="#3f3f46" strokeWidth="1.5" />
                 <line x1="360" y1="90" x2="600" y2="195" stroke="#3f3f46" strokeWidth="1.5" />
-                <line x1="140" y1="245" x2="380" y2="245" stroke="#3f3f46" strokeWidth="1.5" strokeDasharray="4 3" />
-                <line x1="380" y1="245" x2="600" y2="245" stroke="#3f3f46" strokeWidth="1.5" strokeDasharray="4 3" />
 
                 {agents.map((agent) => (
                     <g
                         key={agent.id}
                         onMouseEnter={() => handleEnter(agent.id)}
                         onMouseLeave={handleLeave}
+                        onClick={() => handleClick(agent.id)}
                         style={{ cursor: 'pointer' }}
                     >
                         <rect
@@ -108,7 +111,7 @@ function ArchitectureDiagram({ highlighted = [], onHoverChange }) {
                         — {activeAgent.desc}
                     </p>
                 ) : (
-                    <p className="text-zinc-500">Hover any node, or watch the lifecycle animate on the right.</p>
+                    <p className="text-zinc-500">Tap or hover any node, or watch the lifecycle animate on the right.</p>
                 )}
             </div>
         </div>
@@ -142,8 +145,8 @@ function RequestFlow({ onStepChange, paused = false }) {
                             <button
                                 onClick={() => { setStep(i); setPlaying(false) }}
                                 className={`w-7 h-7 rounded-full border-2 flex-shrink-0 flex items-center justify-center text-xs font-semibold transition-all duration-300 ${i <= step
-                                        ? 'bg-amber-500 border-amber-500 text-zinc-950'
-                                        : 'bg-zinc-900 border-zinc-700 text-zinc-500 hover:border-zinc-500'
+                                    ? 'bg-amber-500 border-amber-500 text-zinc-950'
+                                    : 'bg-zinc-900 border-zinc-700 text-zinc-500 hover:border-zinc-500'
                                     }`}
                             >
                                 {i + 1}
@@ -196,10 +199,12 @@ function EvalTable() {
                         <td className="py-2 text-zinc-500">Deliberate tradeoff — see below</td>
                     </tr>
                     <tr>
-                        <td className="py-2 pr-4">+ 52k corpus, Voyage AI</td>
-                        <td className="py-2 pr-4 text-emerald-400">0.578 (+0.054)</td>
-                        <td className="py-2 pr-4 text-emerald-400">0.279 (+0.045)</td>
-                        <td className="py-2 text-zinc-500">Corpus size drove most of the gain</td>
+                        <tr>
+                            <td className="py-2 pr-4">+ 52k corpus, Voyage AI</td>
+                            <td className="py-2 pr-4 text-emerald-400">0.578 (+0.096)</td>
+                            <td className="py-2 pr-4 text-orange-400">0.279 (−0.046)</td>
+                            <td className="py-2 text-zinc-500">Context relevance up; answer relevancy regression — see below</td>
+                        </tr>
                     </tr>
                 </tbody>
             </table>
