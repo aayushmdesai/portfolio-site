@@ -3,12 +3,12 @@ import { Mail } from 'lucide-react'
 
 const skillGroups = [
     {
-        title: 'AI & Agent Systems',
-        skills: ['Semantic Kernel', 'RAG', 'Qdrant', 'RAGAS', 'Langfuse', 'MCP', 'Ollama', 'Groq', 'Voyage AI', 'Azure OpenAI', 'LLM agent workflows'],
-    },
-    {
         title: 'Languages & Frameworks',
         skills: ['C#', 'ASP.NET Core', 'Entity Framework Core', 'LINQ', 'Python', 'TypeScript', 'SQL', 'Ruby on Rails'],
+    },
+    {
+        title: 'AI & Agent Systems',
+        skills: ['Semantic Kernel', 'RAG', 'Qdrant', 'RAGAS', 'Langfuse', 'MCP', 'Ollama', 'Groq', 'Voyage AI', 'Azure OpenAI', 'LLM agent workflows'],
     },
     {
         title: 'Cloud & Infrastructure',
@@ -23,6 +23,7 @@ const skillGroups = [
         skills: ['Microservices', 'Event-Driven Design', 'REST APIs', 'Circuit Breakers', 'Idempotency', 'Retry & Backoff', 'Serilog', 'Hangfire', 'xUnit', 'OpenAPI'],
     },
 ]
+
 const projects = [
     {
         id: 'experience',

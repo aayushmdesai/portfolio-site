@@ -78,10 +78,10 @@ const expanded = [
 ]
 
 const quickBullets = [
-    'Trained 3 junior analysts on system workflows and production practices; SME and technical lead across MCP integration, Ruby-to-.NET migration, and Patient Journey initiatives',
+    'Trained 3 junior analysts on system workflows and production practices; SME across MCP integration, Ruby-to-.NET migration, and Patient Journey initiatives',
     'Led modernization of legacy Ruby systems into .NET 6–8 microservices via feature flags, with backward-compatible APIs, zero-downtime migration, and unit and integration test coverage — production incidents down 40%',
     'Built a concurrency-safe availability & slot computation engine using parallel execution and Redis and in-memory caching — 40% faster slot searches at scale',
-    'Architected a HIPAA-compliant event streaming pipeline processing 1K–10K booking events daily with durable retries and idempotency, publishing to Azure Event Hub',
+    'Built a HIPAA-compliant event streaming pipeline with durable retries and idempotency, publishing booking events to Azure Event Hub',
     'Drove consolidation of 5+ services into a shared orchestration layer (.NET 8, Hangfire, Azure Service Bus, Event Hub), reducing cross-team integration overhead',
     'Independently stood up the AdvanceMD EHR connector end-to-end within a month, enabling a new enterprise client segment',
 ]

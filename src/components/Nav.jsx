@@ -29,9 +29,20 @@ function Nav() {
     )
 
     sections.forEach((section) => observer.observe(section))
-    return () => observer.disconnect()
-  }, [])
 
+    // Fallback: if scrolled near the bottom, activate Connect
+    const handleScroll = () => {
+      const nearBottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 100
+      if (nearBottom) setActive('connect')
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+
+    return () => {
+      observer.disconnect()
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
+  
   const handleClick = (e, id) => {
     e.preventDefault()
     setMenuOpen(false)
@@ -62,8 +73,8 @@ function Nav() {
               href={`#${link.id}`}
               onClick={(e) => handleClick(e, link.id)}
               className={`text-sm transition ${active === link.id
-                  ? 'text-zinc-100 font-medium'
-                  : 'text-zinc-400 hover:text-zinc-200'
+                ? 'text-zinc-100 font-medium'
+                : 'text-zinc-400 hover:text-zinc-200'
                 }`}
             >
               {link.label}
@@ -92,8 +103,8 @@ function Nav() {
               href={`#${link.id}`}
               onClick={(e) => handleClick(e, link.id)}
               className={`text-sm transition ${active === link.id
-                  ? 'text-zinc-100 font-medium'
-                  : 'text-zinc-400 hover:text-zinc-200'
+                ? 'text-zinc-100 font-medium'
+                : 'text-zinc-400 hover:text-zinc-200'
                 }`}
             >
               {link.label}

@@ -163,7 +163,16 @@ function RequestFlow({ onStepChange, paused = false }) {
                     </div>
                 ))}
             </div>
-        </div>
+
+            {!playing && (
+                <button
+                    onClick={() => { setStep(0); setPlaying(true) }}
+                    className="mt-4 text-xs text-zinc-500 hover:text-zinc-300 transition self-start"
+                >
+                    ↺ Replay
+                </button>
+            )}
+        </div >
     )
 }
 
