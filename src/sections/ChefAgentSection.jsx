@@ -209,7 +209,7 @@ function EvalTable() {
                     <tr className="border-b border-zinc-900">
                         <td className="py-2 pr-4">+ Semantic negation</td>
                         <td className="py-2 pr-4 text-orange-400">0.482 (−0.042)</td>
-                        <td className="py-2 pr-4 text-emerald-400">0.325 (+0.112)</td>
+                        <td className="py-2 pr-4 text-emerald-400">0.325 (+0.091)</td>
                         <td className="py-2 text-zinc-500">Deliberate tradeoff — see below</td>
                     </tr>
 

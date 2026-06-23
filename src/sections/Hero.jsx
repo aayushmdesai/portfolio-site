@@ -70,8 +70,8 @@ function Hero() {
                     <h1 className="text-3xl sm:text-4xl font-bold mb-2">Aayush Desai</h1>
 
                     <p className="text-zinc-400 text-lg mb-2">
-                        Backend engineer building AI agent infrastructure — multi-agent
-                        orchestration, RAG pipelines, and open-source MCP tooling.
+                        Backend engineer — 5 years in .NET/Azure healthcare systems. Building
+                        AI agents on the side: a multi-agent RAG app and an open-source MCP server.
                     </p>
 
                     {/* Location */}
