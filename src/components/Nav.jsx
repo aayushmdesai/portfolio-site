@@ -42,7 +42,7 @@ function Nav() {
       window.removeEventListener('scroll', handleScroll)
     }
   }, [])
-  
+
   const handleClick = (e, id) => {
     e.preventDefault()
     setMenuOpen(false)
@@ -87,6 +87,7 @@ function Nav() {
           className="md:hidden flex flex-col gap-1.5 p-1"
           onClick={() => setMenuOpen((o) => !o)}
           aria-label="Toggle menu"
+          aria-expanded={menuOpen}
         >
           <span className={`block w-5 h-px bg-zinc-400 transition-all duration-300 ${menuOpen ? 'rotate-45 translate-y-2' : ''}`} />
           <span className={`block w-5 h-px bg-zinc-400 transition-all duration-300 ${menuOpen ? 'opacity-0' : ''}`} />

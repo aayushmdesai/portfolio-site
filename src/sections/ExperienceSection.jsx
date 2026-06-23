@@ -21,7 +21,8 @@ const expanded = [
                     didn't translate cleanly between AWS and Azure, the two sides were owned by
                     different teams with their own approval processes, and networking between
                     the clouds wasn't always straightforward. Getting all three of those working
-                    together was most of the actual difficulty.
+                    together was most of the actual difficulty. The gateway shipped to production
+                    and is actively used by LLM agents calling backend services across both clouds.
                 </p>
             </>
         ),
@@ -70,7 +71,9 @@ const expanded = [
                     otherwise not legitimate before it got processed. The encryption work and
                     the login/auth flow around the portal were where most of the real
                     engineering judgment went — making sure sensitive data was protected at
-                    rest and that access to it was properly gated.
+                    rest and that access to it was properly gated. The portal shipped as a
+                    new patient-facing feature — patients now upload documents and complete
+                    payments before appointments, reducing manual staff processing at intake.
                 </p>
             </>
         ),
@@ -82,7 +85,7 @@ const quickBullets = [
     'Led modernization of legacy Ruby systems into .NET 6–8 microservices via feature flags, with backward-compatible APIs, zero-downtime migration, and unit and integration test coverage — production incidents down 40%',
     'Built a concurrency-safe availability & slot computation engine using parallel execution and Redis and in-memory caching — 40% faster slot searches at scale',
     'Built a HIPAA-compliant event streaming pipeline with durable retries and idempotency, publishing booking events to Azure Event Hub',
-    'Drove consolidation of 5+ services into a shared orchestration layer (.NET 8, Hangfire, Azure Service Bus, Event Hub), reducing cross-team integration overhead',
+    'Consolidated 5+ services into a shared orchestration layer (.NET 8, Hangfire, Azure Service Bus, Event Hub) — centralized job visibility and Redis state management across teams',
     'Independently stood up the AdvanceMD EHR connector end-to-end within a month, enabling a new enterprise client segment',
 ]
 

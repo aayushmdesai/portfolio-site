@@ -64,7 +64,8 @@ function ArchitectureDiagram({ highlighted = [], onHoverChange }) {
 
     return (
         <div className="border border-zinc-800 rounded-xl p-6 bg-zinc-900/40 h-full">
-            <svg viewBox="50 10 680 280" className="w-full h-auto">
+            <svg viewBox="50 10 680 280" className="w-full h-auto" role="img" aria-label="ChefAgent architecture diagram">
+                <title>ChefAgent architecture — Orchestrator routes to RecipeAgent, DietAgent, and PlannerAgent</title>
                 <line x1="360" y1="90" x2="140" y2="195" stroke="#3f3f46" strokeWidth="1.5" />
                 <line x1="360" y1="90" x2="380" y2="195" stroke="#3f3f46" strokeWidth="1.5" />
                 <line x1="360" y1="90" x2="600" y2="195" stroke="#3f3f46" strokeWidth="1.5" />
@@ -75,6 +76,10 @@ function ArchitectureDiagram({ highlighted = [], onHoverChange }) {
                         onMouseEnter={() => handleEnter(agent.id)}
                         onMouseLeave={handleLeave}
                         onClick={() => handleClick(agent.id)}
+                        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleClick(agent.id) }}
+                        tabIndex={0}
+                        role="button"
+                        aria-label={agent.name}
                         style={{ cursor: 'pointer' }}
                     >
                         <rect
