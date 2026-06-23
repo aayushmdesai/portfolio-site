@@ -105,30 +105,46 @@ function CopyButton({ text }) {
 
 function ToolsTable() {
     return (
-        <div className="overflow-x-auto">
-            <table className="w-full text-sm border-collapse">
-                <thead>
-                    <tr className="text-left text-zinc-400 border-b border-zinc-800">
-                        <th className="py-2 pr-4">Tool</th>
-                        <th className="py-2 pr-4">Exposes</th>
-                        <th className="py-2">Reach for it when...</th>
-                    </tr>
-                </thead>
-                <tbody className="text-zinc-300">
-                    {tools.map((tool) => (
-                        <tr key={tool.name} className="border-b border-zinc-900">
-                            <td className="py-2.5 pr-4">
-                                <code className="text-xs bg-zinc-800 px-1.5 py-0.5 rounded text-emerald-400">
-                                    {tool.name}
-                                </code>
-                            </td>
-                            <td className="py-2.5 pr-4 text-zinc-400">{tool.exposes}</td>
-                            <td className="py-2.5 text-zinc-500">{tool.reachFor}</td>
+        <>
+            {/* Desktop: table */}
+            <div className="hidden sm:block overflow-x-auto">
+                <table className="w-full text-sm border-collapse">
+                    <thead>
+                        <tr className="text-left text-zinc-400 border-b border-zinc-800">
+                            <th className="py-2 pr-4">Tool</th>
+                            <th className="py-2 pr-4">Exposes</th>
+                            <th className="py-2">Reach for it when...</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody className="text-zinc-300">
+                        {tools.map((tool) => (
+                            <tr key={tool.name} className="border-b border-zinc-900">
+                                <td className="py-2.5 pr-4">
+                                    <code className="text-xs bg-zinc-800 px-1.5 py-0.5 rounded text-emerald-400">
+                                        {tool.name}
+                                    </code>
+                                </td>
+                                <td className="py-2.5 pr-4 text-zinc-400">{tool.exposes}</td>
+                                <td className="py-2.5 text-zinc-500">{tool.reachFor}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+
+            {/* Mobile: stacked cards */}
+            <div className="sm:hidden flex flex-col gap-3">
+                {tools.map((tool) => (
+                    <div key={tool.name} className="border border-zinc-800 rounded-lg p-4">
+                        <code className="text-xs bg-zinc-800 px-1.5 py-0.5 rounded text-emerald-400 block mb-2">
+                            {tool.name}
+                        </code>
+                        <p className="text-zinc-400 text-xs mb-1">{tool.exposes}</p>
+                        <p className="text-zinc-500 text-xs">{tool.reachFor}</p>
+                    </div>
+                ))}
+            </div>
+        </>
     )
 }
 

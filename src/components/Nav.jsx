@@ -13,6 +13,24 @@ function Nav() {
   const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
+    if (!menuOpen) return
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setMenuOpen(false)
+    }
+    const handleClickOutside = (e) => {
+      if (!e.target.closest('nav')) setMenuOpen(false)
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [menuOpen])
+
+  useEffect(() => {
     const sections = links
       .map((link) => document.getElementById(link.id))
       .filter(Boolean)
@@ -30,7 +48,6 @@ function Nav() {
 
     sections.forEach((section) => observer.observe(section))
 
-    // Fallback: if scrolled near the bottom, activate Connect
     const handleScroll = () => {
       const nearBottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 100
       if (nearBottom) setActive('connect')
