@@ -7,7 +7,7 @@ const agents = [
         x: 320,
         y: 40,
         color: '#f59e0b',
-        desc: 'Routes every message to the right agent. Built on a rules-based IntentRouter — zero LLM calls for classification, 94% accuracy on the labeled eval set. LLM classification stays in the backlog until a larger labeled dataset justifies the cost.',
+        desc: 'Routes every message to the right agent. Built on a rules-based IntentRouter — zero LLM calls for classification, 96% accuracy (57/59) on the labeled eval set. LLM classification stays in the backlog until a larger labeled dataset justifies the cost.',
     },
     {
         id: 'recipe',
@@ -212,12 +212,51 @@ function EvalTable() {
                         <td className="py-2 pr-4 text-emerald-400">0.325 (+0.091)</td>
                         <td className="py-2 text-zinc-500">Deliberate tradeoff — see below</td>
                     </tr>
-
                     <tr>
                         <td className="py-2 pr-4">+ 52k corpus, Voyage AI</td>
                         <td className="py-2 pr-4 text-emerald-400">0.578 (+0.096)</td>
                         <td className="py-2 pr-4 text-orange-400">0.279 (−0.046)</td>
-                        <td className="py-2 text-zinc-500">Context relevance up; answer relevancy regression — see below</td>
+                        <td className="py-2 text-zinc-500">Context up; answer relevancy regression</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    )
+}
+
+function RagasTable() {
+    const rows = [
+        ['Exact match', '0.79'],
+        ['Misspelling', '0.75'],
+        ['By ingredients', '0.68'],
+        ['Technique', '0.63'],
+        ['Filtering', '0.58'],
+        ['Negation', '0.55'],
+        ['Situation', '0.54'],
+        ['Cuisine', '0.51'],
+        ['Multi-intent', '0.51'],
+        ['x-free', '0.39'],
+        ['Dietary', '0.26'],
+    ]
+    return (
+        <div className="overflow-x-auto">
+            <table className="w-full text-sm border-collapse">
+                <thead>
+                    <tr className="text-left text-zinc-400 border-b border-zinc-800">
+                        <th className="py-2 pr-4">Query category</th>
+                        <th className="py-2">Context Precision</th>
+                    </tr>
+                </thead>
+                <tbody className="text-zinc-300">
+                    {rows.map(([cat, val]) => (
+                        <tr key={cat} className="border-b border-zinc-900">
+                            <td className="py-2 pr-4">{cat}</td>
+                            <td className="py-2">{val}</td>
+                        </tr>
+                    ))}
+                    <tr>
+                        <td className="py-2 pr-4 font-semibold text-zinc-100">Overall (excl. edge cases)</td>
+                        <td className="py-2 font-semibold text-zinc-100">0.55</td>
                     </tr>
                 </tbody>
             </table>
@@ -328,19 +367,56 @@ function ChefAgentSection() {
 
             <section className="mb-12">
                 <h2 className="text-xl font-semibold mb-4">Evaluation results</h2>
+
+                <p className="text-sm text-zinc-400 mb-4 leading-relaxed">
+                    End-to-end: <span className="text-zinc-200 font-medium">93% pass rate (56/60)</span> across a
+                    hand-curated golden dataset covering intent classification, dietary filtering, meal plan
+                    generation, and multi-turn conversation — run against the live Railway deployment. Intent
+                    classification accuracy is ~96% (57/59). The four non-passes are named, not hidden: one
+                    guardrail gap (repetition flooding), one router boundary (a conversational diet-validation
+                    question read as a search), one data-coverage gap (no paleo-tagged recipes in the corpus),
+                    and one infrastructure timeout.
+                </p>
+
+                <h3 className="text-base font-semibold text-zinc-200 mt-8 mb-2">
+                    Retrieval quality — RAGAS, Claude judge
+                </h3>
+                <p className="text-sm text-zinc-400 mb-4 leading-relaxed">
+                    Context Precision across query categories, scored with a Claude judge and Voyage embeddings
+                    over the 100-question golden set. Strong where the pipeline was built to be strong (exact
+                    match, misspelling correction, ingredient matching); weaker on dietary and exclusion queries —
+                    a known embedding limitation, documented below.
+                </p>
+                <RagasTable />
+                <p className="text-xs text-zinc-500 mt-3 leading-relaxed">
+                    Faithfulness and answer-relevancy are omitted from this view: ChefAgent returns a ranked
+                    recipe list with a short header rather than a synthesized prose answer, so those metrics
+                    measure response format, not retrieval quality. Scored with a Claude judge — not directly
+                    comparable to the earlier progression below, which used a local model.
+                </p>
+
+                <h3 className="text-base font-semibold text-zinc-200 mt-8 mb-2">
+                    Preprocessing progression (earlier, local-model judge)
+                </h3>
+                <p className="text-sm text-zinc-400 mb-4 leading-relaxed">
+                    The path that got there — each preprocessing step measured before any cloud migration,
+                    scored with a local model. Kept as the build history; not comparable to the Claude-judged
+                    numbers above.
+                </p>
                 <EvalTable />
                 <p className="text-sm text-zinc-400 mt-4 leading-relaxed">
-                    End-to-end: 87% pass rate (52/60) across a hand-curated golden dataset
-                    covering intent classification, dietary filtering, meal plan generation,
-                    and multi-turn conversation — run against the live Railway deployment.
-                </p>
-                <p className="text-sm text-zinc-400 mt-4 leading-relaxed">
-                    The semantic negation step is a deliberate tradeoff, not a regression to hide. Filtering out non-dairy recipes from a "dairy-free pasta" query shrinks the retrieval pool — context relevance drops slightly because fewer documents are considered relevant by the metric. But answer relevancy jumps +0.112 over baseline, because a user asking for dairy-free pasta would rather see 2 compatible recipes than 5 recipes where 3 contain cheese. The metric that matters most went up.
+                    The semantic negation step is a deliberate tradeoff, not a regression to hide. Filtering
+                    non-dairy recipes out of a "dairy-free pasta" query shrinks the retrieval pool, so the
+                    context metric dips — but a user asking for dairy-free pasta would rather see 2 compatible
+                    recipes than 5 where 3 contain cheese.
                 </p>
                 <p className="text-sm text-zinc-400 mt-3 leading-relaxed">
-                    One known regression remains in the backlog: the Voyage AI embedding migration improved overall context relevance (driven mostly by corpus growth from 10k to 52k recipes) but weakened negation-query performance specifically, since{' '}
-                    <code className="text-xs bg-zinc-800 px-1 py-0.5 rounded">voyage-4-lite</code>{' '}
-                    encodes exclusion phrases differently than the previous model. Post-retrieval filtering can't fully rescue a weaker initial candidate set — documented as tech debt rather than papered over.
+                    One known limitation remains: the Voyage AI migration grew the corpus from 10k to 52k recipes
+                    and lifted overall retrieval, but weakened exclusion-query performance specifically —{' '}
+                    <code className="text-xs bg-zinc-800 px-1 py-0.5 rounded">voyage-4-lite</code> encodes
+                    "without X" phrasing closer to "with X" than the previous model. The RAGAS scores above
+                    quantify it (x-free 0.39, dietary 0.26). Post-retrieval filtering can't fully rescue a
+                    weaker initial candidate set — documented as tech debt, not papered over.
                 </p>
             </section>
 
